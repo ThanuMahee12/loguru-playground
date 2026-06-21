@@ -1,36 +1,71 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code (claude.ai/code) when working with this repository.
 
 ## Repository Purpose
 
-This is a Git/GitHub starter template repository containing essential configuration files for new projects. It provides:
-- Standard GitHub workflow configuration (PR templates, auto-release)
-- Editor configuration (.editorconfig)
-- Semantic versioning with automated releases
+A hands-on loguru exploration repo for data science and ML logging patterns. Each `process/process_N.py` script isolates a specific loguru feature using randomly generated fake logs.
 
-## Key Scripts
+## Stack
 
-**Manual version bumping:**
-```bash
-./scripts/bump-version.sh [major|minor|patch]  # defaults to patch
+- **Python**: 3.13+
+- **Package manager**: `uv`
+- **Logging**: `loguru`
+- **Fake data**: `faker`
+- **Config**: `pyyaml`, `python-dotenv`
+- **Versioning**: `hatch-vcs` (git tag driven)
+
+## Project Structure
+
+```
+loguru_playground/
+    config/
+        env.py              # LOG_PATH, ARCHIVE_PATH as Path objects from .env
+        logger.yaml         # per-process sink config (level, rotation, compression)
+        logger_config.py    # setup_logger(process_name) reads logger.yaml
+    generator/
+        main.py             # faker-based log generators, run_forever()
+process/
+    process_1.py            # core plain logs + size rotation
+    process_2.py            # structured JSON logging
 ```
 
-## Automated Workflows
+## Key Patterns
 
-- **Auto Release** (`.github/workflows/auto-release.yml`): Automatically creates a GitHub release on every push to main. First release starts at v0.0.0, subsequent releases increment the patch version. Generates release notes from commit messages.
+**Running a process:**
+```bash
+uv run python process/process_1.py
+```
 
-## Code Style
+**Generator usage:**
+```python
+from loguru_playground.generator.main import run_forever, random_log_stream
+for log in run_forever(interval_sec=0.5):   # infinite
+    logger.log(log["level"], log["message"])
+```
 
-Uses `.editorconfig` for consistent formatting:
-- UTF-8 charset, LF line endings
-- 2-space indentation (except: Python uses 4 spaces, Go/Makefile use tabs)
-- CRLF for Windows batch/PowerShell files
+**Dynamic logger setup:**
+```python
+from loguru_playground.config.logger_config import setup_logger
+setup_logger("process_1")  # reads sinks from logger.yaml
+```
+
+## Log Archive Structure
+
+```
+archive/YYYY/MM/DD/<process>/app_HHMMSS.log.gz
+archive/YYYY/MM/DD/<process>/error_HHMMSS.log.gz
+```
 
 ## Branch Conventions
 
-- Production branch: `main` (triggers auto-release)
-- Development branch: `dev`
-- Feature branches: `feature/your-feature-name` (branch from `dev`)
-- PR templates available for: feature, bugfix, hotfix, advanced changes
-- Branch protection rules: see `.github/BRANCH_PROTECTION.md` for setup guide
+- Production: `main` (triggers auto-release via `.github/workflows/auto-release.yml`)
+- Development: `staging`
+- Feature branches: `feature/your-feature-name`
+
+## Environment Variables
+
+| Variable | Default | Description |
+|---|---|---|
+| `LOG_PATH` | `logs` | Active log directory |
+| `ARCHIVE_PATH` | `archive` | Rotated log archive root |
