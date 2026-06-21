@@ -1,14 +1,18 @@
-# Project Name
+# loguru-playground
 
-Brief description of what this project does.
+A hands-on exploration of loguru's logging capabilities for data pipelines and ML workflows.
 
 ## Getting Started
 
-Instructions for setting up and running the project.
+```bash
+uv sync
+```
 
 ## Usage
 
-How to use the project.
+```bash
+uv run python <script.py>
+```
 
 ## License
 
