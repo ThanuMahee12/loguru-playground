@@ -149,3 +149,9 @@ def random_log_stream(count: int):
 
 def mixed_log_stream(count: int, weights: list[int] | None = None):
     return (random.choices(LOG_BUILDERS, weights=weights)[0]() for _ in range(count))
+
+def run_forever(interval_sec: float = 0.5):
+    import time
+    while True:
+        yield random.choice(LOG_BUILDERS)()
+        time.sleep(interval_sec)
