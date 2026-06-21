@@ -1,0 +1,80 @@
+process_1:
+  description: "Size-based rotation + core features"
+  sinks:
+    stdout:
+      level: DEBUG
+      colorize: true
+      format: "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{message}</cyan>"
+    app:
+      path: "logs/process_1/app.log"
+      level: INFO
+      format: "{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}:{line} | {message}"
+      rotation: "1 MB"
+      retention: 5
+      compression: "gzip"
+    error:
+      path: "logs/process_1/error.log"
+      level: ERROR
+      format: "{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}:{line} | {message}"
+      rotation: "500 KB"
+      retention: 3
+      compression: "gzip"
+
+process_2:
+  description: "Time-based rotation"
+  sinks:
+    stdout:
+      level: DEBUG
+      colorize: true
+      format: "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{message}</cyan>"
+    app:
+      path: "logs/process_2/app.log"
+      level: DEBUG
+      format: "{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}:{line} | {message}"
+      rotation: "1 day"
+      retention: "7 days"
+      compression: "gzip"
+    error:
+      path: "logs/process_2/error.log"
+      level: ERROR
+      format: "{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}:{line} | {message}"
+      rotation: "1 day"
+      retention: "3 days"
+      compression: "gzip"
+
+process_3:
+  description: "Structured JSON logging"
+  sinks:
+    stdout:
+      level: DEBUG
+      colorize: false
+      serialize: true
+    app:
+      path: "logs/process_3/app.json"
+      level: DEBUG
+      serialize: true
+      rotation: "1 MB"
+      retention: 5
+      compression: "gzip"
+    error:
+      path: "logs/process_3/error.json"
+      level: ERROR
+      serialize: true
+      rotation: "500 KB"
+      retention: 3
+      compression: "gzip"
+
+process_4:
+  description: "Custom sinks + filtering"
+  sinks:
+    stdout:
+      level: DEBUG
+      colorize: true
+      format: "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{message}</cyan>"
+    app:
+      path: "logs/process_4/app.log"
+      level: DEBUG
+      format: "{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}:{line} | {message}"
+      rotation: "1 MB"
+      retention: 5
+      compression: "gzip"
