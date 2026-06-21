@@ -7,16 +7,16 @@ process_1:
       format: "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{message}</cyan>"
     app:
       path: "logs/process_1/app.log"
-      level: INFO
+      level: DEBUG
       format: "{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}:{line} | {message}"
-      rotation: "1 MB"
+      rotation: "20 KB"
       retention: 5
       compression: "gzip"
     error:
       path: "logs/process_1/error.log"
-      level: ERROR
+      level: DEBUG
       format: "{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}:{line} | {message}"
-      rotation: "500 KB"
+      rotation: "5 KB"
       retention: 3
       compression: "gzip"
 
