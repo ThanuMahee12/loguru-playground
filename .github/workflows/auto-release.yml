@@ -1,0 +1,109 @@
+name: Auto Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get latest tag
+        id: get_tag
+        run: |
+          # Check if any tags exist
+          if git describe --tags --abbrev=0 2>/dev/null; then
+            LATEST_TAG=$(git describe --tags --abbrev=0)
+            echo "latest_tag=$LATEST_TAG" >> $GITHUB_OUTPUT
+            echo "is_first_release=false" >> $GITHUB_OUTPUT
+            echo "Latest tag: $LATEST_TAG"
+          else
+            echo "is_first_release=true" >> $GITHUB_OUTPUT
+            echo "No tags found. This will be the first release (v0.0.0)"
+          fi
+
+      - name: Bump version
+        id: bump_version
+        run: |
+          if [ "${{ steps.get_tag.outputs.is_first_release }}" = "true" ]; then
+            NEW_VERSION="v0.0.0"
+          else
+            LATEST_TAG="${{ steps.get_tag.outputs.latest_tag }}"
+
+            # Remove 'v' prefix if present
+            VERSION=${LATEST_TAG#v}
+
+            # Split version into parts
+            IFS='.' read -ra VERSION_PARTS <<< "$VERSION"
+            MAJOR=${VERSION_PARTS[0]}
+            MINOR=${VERSION_PARTS[1]}
+            PATCH=${VERSION_PARTS[2]}
+
+            # Increment patch version
+            PATCH=$((PATCH + 1))
+
+            NEW_VERSION="v${MAJOR}.${MINOR}.${PATCH}"
+          fi
+
+          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "New version: $NEW_VERSION"
+
+      - name: Create tag
+        run: |
+          NEW_VERSION="${{ steps.bump_version.outputs.new_version }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "$NEW_VERSION" -m "Release $NEW_VERSION"
+          git push origin "$NEW_VERSION"
+
+      - name: Generate release notes
+        id: release_notes
+        run: |
+          NEW_VERSION="${{ steps.bump_version.outputs.new_version }}"
+          LATEST_TAG="${{ steps.get_tag.outputs.latest_tag }}"
+
+          # Get commit messages since last tag (or all commits for first release)
+          if [ "${{ steps.get_tag.outputs.is_first_release }}" = "true" ]; then
+            COMMITS=$(git log --pretty=format:"- %s" --no-merges)
+          else
+            COMMITS=$(git log ${LATEST_TAG}..HEAD --pretty=format:"- %s" --no-merges)
+          fi
+
+          # Create release notes
+          if [ "${{ steps.get_tag.outputs.is_first_release }}" = "true" ]; then
+            cat > release_notes.md <<EOF
+          ## What's Changed
+
+          $COMMITS
+
+          **Full Changelog**: https://github.com/${{ github.repository }}/commits/${NEW_VERSION}
+          EOF
+          else
+            cat > release_notes.md <<EOF
+          ## What's Changed
+
+          $COMMITS
+
+          **Full Changelog**: https://github.com/${{ github.repository }}/compare/${LATEST_TAG}...${NEW_VERSION}
+          EOF
+          fi
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.bump_version.outputs.new_version }}
+          release_name: Release ${{ steps.bump_version.outputs.new_version }}
+          body_path: release_notes.md
+          draft: false
+          prerelease: false
