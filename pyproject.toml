@@ -1,7 +1,52 @@
 [project]
 name = "loguru-playground"
-version = "0.1.0"
-description = "Add your description here"
+dynamic = ["version"]
+description = "A hands-on exploration of loguru's logging capabilities for data pipelines and ML workflows."
 readme = "README.md"
-requires-python = ">=3.12"
-dependencies = []
+requires-python = ">=3.13"
+license = { text = "MIT" }
+authors = [
+  { name = "Thanujan Mahendran", email = "thanuja.tech@gmail.com" }
+]
+keywords = ["loguru", "logging", "data-science", "ml"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+]
+dependencies = [
+  "loguru>=0.7.3",
+]
+
+[project.urls]
+Homepage = "https://github.com/ThanuMahee12/loguru-playground"
+Repository = "https://github.com/ThanuMahee12/loguru-playground"
+Issues = "https://github.com/ThanuMahee12/loguru-playground/issues"
+
+[project.optional-dependencies]
+dev = ["pytest", "ruff", "mypy"]
+notebooks = ["jupyter", "ipykernel"]
+
+[tool.uv]
+dev-dependencies = [
+    "pytest",
+ "ruff",
+ "mypy",
+ "hatch-vcs>=0.5.0",
+]
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/loguru_playground"]
+
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+line-length = 88
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
