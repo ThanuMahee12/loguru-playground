@@ -43,12 +43,18 @@ logger.add(
     LOG_DIR / "app.log",
     level="DEBUG",
     format=LOG_FORMAT,
+    rotation="20 KB",
+    retention=5,
+    compression="gz",
 )
 
 logger.add(
     LOG_DIR / "error.log",
     level="ERROR",
     format=LOG_FORMAT,
+    rotation="20 KB",
+    retention=3,
+    compression="gz",
 )
 
 # --- Log dispatcher ---
