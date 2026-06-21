@@ -16,6 +16,7 @@ classifiers = [
 dependencies = [
   "faker>=40.23.0",
   "loguru>=0.7.3",
+  "python-dotenv>=1.2.2",
 ]
 
 [project.urls]
