@@ -28,6 +28,7 @@ loguru_playground/
 process/
     process_1.py            # core plain logs + size rotation
     process_2.py            # structured JSON logging
+    process_3.py            # exception handling — catch decorator, context manager, diagnose=True
 ```
 
 ## Key Patterns

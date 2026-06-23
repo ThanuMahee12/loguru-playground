@@ -19,6 +19,7 @@ loguru_playground/
 process/
     process_1.py            # core plain text logging + size rotation
     process_2.py            # structured JSON logging
+    process_3.py            # exception handling + tracebacks
 ```
 
 ## Processes
@@ -27,6 +28,7 @@ process/
 |---|---|
 | `process_1.py` | Core plain logs, size-based rotation, archive path |
 | `process_2.py` | Structured JSON logging (`.jsonl`), archive rotation |
+| `process_3.py` | Exception handling — `logger.catch()`, `logger.exception()`, `diagnose=True` |
 
 ## Log Output
 
@@ -47,6 +49,7 @@ uv sync
 ```bash
 uv run python process/process_1.py
 uv run python process/process_2.py
+uv run python process/process_3.py
 ```
 
 ## License
