@@ -29,9 +29,25 @@ def load_random_user_data(id: int | None = None) -> dict:
     with urllib.request.urlopen(req) as r:
         return json.loads(r.read())
 
-def main():
-    todo = load_data(id=random_id())
-    print(todo)
-
-if __name__ == "__main__":
-    main()
+def init_db(conn:sqlite3.Connection):
+    conn.execute(
+         """
+ CREATE TABLE IF NOT EXISTS user (
+       id          INTEGER PRIMARY KEY,
+      first_name        TEXT,
+      last_name   TEXT,
+      age     TEXT
+      )
+"""
+     )
+       
+    conn.execute(
+         """
+ CREATE TABLE IF NOT EXISTS todos (
+       id          INTEGER PRIMARY KEY,
+      todo        TEXT,
+      completed   INTEGER,
+      user_id     INTEGER
+      )
+"""
+     )
