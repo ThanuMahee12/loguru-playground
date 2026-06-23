@@ -18,10 +18,9 @@ Run:
 
 import signal
 import sys
-from pathlib import Path
 from loguru import logger
 from loguru_playground.generator.main import run_forever
-from loguru_playground.config.env import LOG_PATH, ARCHIVE_PATH
+from loguru_playground.config.logger_config import add_file_sinks
 
 # --- Setup ---
 
@@ -29,35 +28,8 @@ logger.remove()
 
 LOG_FORMAT = "{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {message}"
 
-# Active log (current writing)
-LOG_DIR = LOG_PATH / "live" / "process_1"
-LOG_DIR.mkdir(parents=True, exist_ok=True)
-
-logger.add(
-    sys.stdout,
-    level="DEBUG",
-    format=LOG_FORMAT,
-    colorize=False,
-)
-
-# Rotated files archive to archive/YYYY/MM/DD/process_1/app_HHMMSS.log
-logger.add(
-    str(ARCHIVE_PATH / "{time:YYYY/MM/DD}" / "process_1" / "app_{time:HHmmss}.log"),
-    level="DEBUG",
-    format=LOG_FORMAT,
-    rotation="20 KB",
-    retention=5,
-    compression="gz",
-)
-
-logger.add(
-    str(ARCHIVE_PATH / "{time:YYYY/MM/DD}" / "process_1" / "error_{time:HHmmss}.log"),
-    level="ERROR",
-    format=LOG_FORMAT,
-    rotation="20 KB",
-    retention=3,
-    compression="gz",
-)
+logger.add(sys.stdout, level="DEBUG", format=LOG_FORMAT, colorize=False)
+add_file_sinks("process_1", LOG_FORMAT)
 
 # --- Log dispatcher ---
 

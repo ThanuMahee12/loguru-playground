@@ -22,7 +22,7 @@ import sys
 import random
 from loguru import logger
 from loguru_playground.generator.main import run_forever
-from loguru_playground.config.env import ARCHIVE_PATH
+from loguru_playground.config.logger_config import add_file_sinks
 
 # --- Setup ---
 
@@ -30,39 +30,8 @@ logger.remove()
 
 LOG_FORMAT = "{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {message}"
 
-# Sink 1: stdout with diagnose for variable inspection in tracebacks
-logger.add(
-    sys.stdout,
-    level="DEBUG",
-    format=LOG_FORMAT,
-    colorize=False,
-    diagnose=True,
-    backtrace=True,
-)
-
-# Sink 2: all levels file
-logger.add(
-    str(ARCHIVE_PATH / "{time:YYYY/MM/DD}" / "process_3" / "app_{time:HHmmss}.log"),
-    level="DEBUG",
-    format=LOG_FORMAT,
-    rotation="20 KB",
-    retention=5,
-    compression="gz",
-    diagnose=True,
-    backtrace=True,
-)
-
-# Sink 3: errors only
-logger.add(
-    str(ARCHIVE_PATH / "{time:YYYY/MM/DD}" / "process_3" / "error_{time:HHmmss}.log"),
-    level="ERROR",
-    format=LOG_FORMAT,
-    rotation="20 KB",
-    retention=3,
-    compression="gz",
-    diagnose=True,
-    backtrace=True,
-)
+logger.add(sys.stdout, level="DEBUG", format=LOG_FORMAT, colorize=False, diagnose=True, backtrace=True)
+add_file_sinks("process_3", LOG_FORMAT, diagnose=True, backtrace=True)
 
 # --- Simulated risky operations ---
 

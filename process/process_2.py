@@ -25,36 +25,23 @@ import sys
 from loguru import logger
 from loguru_playground.generator.main import run_forever
 from loguru_playground.config.env import ARCHIVE_PATH
+from loguru_playground.config.logger_config import add_file_sinks
 
 # --- Setup ---
 
 logger.remove()
 
-# Sink 1: stdout JSON
-logger.add(
-    sys.stdout,
-    level="DEBUG",
-    serialize=True,
-)
+# stdout JSON sink
+logger.add(sys.stdout, level="DEBUG", serialize=True)
 
-# Sink 2: all levels JSON file with rotation
+# JSON file sinks — use serialize directly since add_file_sinks uses format
 logger.add(
     str(ARCHIVE_PATH / "{time:YYYY/MM/DD}" / "process_2" / "app_{time:HHmmss}.jsonl"),
-    level="DEBUG",
-    serialize=True,
-    rotation="20 KB",
-    retention=5,
-    compression="gz",
+    level="DEBUG", serialize=True, rotation="20 KB", retention=5, compression="gz",
 )
-
-# Sink 3: errors only JSON file
 logger.add(
     str(ARCHIVE_PATH / "{time:YYYY/MM/DD}" / "process_2" / "error_{time:HHmmss}.jsonl"),
-    level="ERROR",
-    serialize=True,
-    rotation="20 KB",
-    retention=3,
-    compression="gz",
+    level="ERROR", serialize=True, rotation="20 KB", retention=3, compression="gz",
 )
 
 # --- Log dispatcher ---
