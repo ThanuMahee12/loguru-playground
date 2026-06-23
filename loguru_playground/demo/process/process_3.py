@@ -14,14 +14,14 @@ Sinks:
     - error.log       : ERROR+ only, with full tracebacks
 
 Run:
-    uv run python process/process_3.py
+    uv run python loguru_playground/demo/process/process_3.py
 """
 
 import signal
 import sys
 import random
 from loguru import logger
-from loguru_playground.generator.main import run_forever
+from loguru_playground.demo.generator.main import run_forever
 from loguru_playground.config.logger_config import add_file_sinks
 
 # --- Setup ---

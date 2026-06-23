@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with th
 
 ## Repository Purpose
 
-A hands-on loguru exploration repo for data science and ML logging patterns. Each `process/process_N.py` script isolates a specific loguru feature using randomly generated fake logs.
+A hands-on loguru exploration repo for data science and ML logging patterns. Each `loguru_playground/demo/process/process_N.py` script isolates a specific loguru feature using randomly generated fake logs.
 
 ## Stack
 
@@ -22,33 +22,36 @@ loguru_playground/
     config/
         env.py              # LOG_PATH, ARCHIVE_PATH as Path objects from .env
         logger.yaml         # per-process sink config (level, rotation, compression)
-        logger_config.py    # setup_logger(process_name) reads logger.yaml
-    generator/
-        main.py             # faker-based log generators, run_forever()
-process/
-    process_1.py            # core plain logs + size rotation
-    process_2.py            # structured JSON logging
-    process_3.py            # exception handling — catch decorator, context manager, diagnose=True
+        logger_config.py    # add_file_sinks() and setup_logger() helpers
+    demo/
+        generator/
+            main.py         # faker-based log generators, run_forever()
+        process/
+            process_1.py    # core plain logs + size rotation
+            process_2.py    # structured JSON logging
+            process_3.py    # exception handling — catch decorator, context manager, diagnose=True
+            process_4.py    # binding and context — logger.bind, logger.contextualize
+            process_5.py    # async logging — enqueue=True, concurrent workers
 ```
 
 ## Key Patterns
 
 **Running a process:**
 ```bash
-uv run python process/process_1.py
+uv run python loguru_playground/demo/process/process_1.py
 ```
 
 **Generator usage:**
 ```python
-from loguru_playground.generator.main import run_forever, random_log_stream
-for log in run_forever(interval_sec=0.5):   # infinite
+from loguru_playground.demo.generator.main import run_forever, random_log_stream
+for log in run_forever(interval_sec=0.5):
     logger.log(log["level"], log["message"])
 ```
 
-**Dynamic logger setup:**
+**Reusable file sinks:**
 ```python
-from loguru_playground.config.logger_config import setup_logger
-setup_logger("process_1")  # reads sinks from logger.yaml
+from loguru_playground.config.logger_config import add_file_sinks
+add_file_sinks("process_name", LOG_FORMAT, diagnose=True, backtrace=True)
 ```
 
 ## Log Archive Structure

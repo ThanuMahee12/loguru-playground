@@ -13,7 +13,7 @@ Sinks:
     - error.log       : ERROR+ only, enqueued, rotates at 20 KB
 
 Run:
-    uv run python process/process_5.py
+    uv run python loguru_playground/demo/process/process_5.py
 """
 
 import signal
@@ -21,7 +21,7 @@ import sys
 import asyncio
 import random
 from loguru import logger
-from loguru_playground.generator.main import LOG_BUILDERS
+from loguru_playground.demo.generator.main import LOG_BUILDERS
 from loguru_playground.config.logger_config import add_file_sinks
 
 # --- Setup ---

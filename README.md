@@ -14,14 +14,15 @@ loguru_playground/
         env.py              # LOG_PATH, ARCHIVE_PATH as Path objects from .env
         logger.yaml         # per-process sink configuration
         logger_config.py    # setup_logger() and add_file_sinks() helpers
-    generator/
-        main.py             # faker-based log generators + run_forever()
-process/
-    process_1.py            # core plain text logging + size-based rotation
-    process_2.py            # structured JSON logging (.jsonl)
-    process_3.py            # exception handling + tracebacks
-    process_4.py            # binding and context (logger.bind, contextualize)
-    process_5.py            # async logging (enqueue=True, concurrent workers)
+    demo/
+        generator/
+            main.py         # faker-based log generators + run_forever()
+        process/
+            process_1.py    # core plain text logging + size-based rotation
+            process_2.py    # structured JSON logging (.jsonl)
+            process_3.py    # exception handling + tracebacks
+            process_4.py    # binding and context (logger.bind, contextualize)
+            process_5.py    # async logging (enqueue=True, concurrent workers)
 ```
 
 ## Processes
@@ -104,11 +105,11 @@ uv sync
 ## Run a Process
 
 ```bash
-uv run python process/process_1.py   # core plain logs
-uv run python process/process_2.py   # JSON logging
-uv run python process/process_3.py   # exception handling
-uv run python process/process_4.py   # binding and context
-uv run python process/process_5.py   # async logging
+uv run python loguru_playground/demo/process/process_1.py   # core plain logs
+uv run python loguru_playground/demo/process/process_2.py   # JSON logging
+uv run python loguru_playground/demo/process/process_3.py   # exception handling
+uv run python loguru_playground/demo/process/process_4.py   # binding and context
+uv run python loguru_playground/demo/process/process_5.py   # async logging
 ```
 
 ## Reusable Helpers
@@ -119,7 +120,7 @@ from loguru_playground.config.logger_config import add_file_sinks
 add_file_sinks("my_process", LOG_FORMAT, diagnose=True, backtrace=True)
 
 # Infinite random log stream
-from loguru_playground.generator.main import run_forever
+from loguru_playground.demo.generator.main import run_forever
 for log in run_forever(interval_sec=0.5):
     logger.log(log["level"], log["message"])
 ```

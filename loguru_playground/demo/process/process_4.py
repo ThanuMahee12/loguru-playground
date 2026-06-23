@@ -13,14 +13,14 @@ Sinks:
     - error.log       : ERROR+ only, rotates at 20 KB
 
 Run:
-    uv run python process/process_4.py
+    uv run python loguru_playground/demo/process/process_4.py
 """
 
 import signal
 import sys
 import random
 from loguru import logger
-from loguru_playground.generator.main import run_forever, LOG_BUILDERS
+from loguru_playground.demo.generator.main import run_forever, LOG_BUILDERS
 from loguru_playground.config.logger_config import add_file_sinks
 
 # --- Setup ---

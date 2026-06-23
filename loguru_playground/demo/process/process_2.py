@@ -17,13 +17,13 @@ Output format (each line):
     {"text": "...", "record": {"time": ..., "level": ..., "message": ..., ...}}
 
 Run:
-    uv run python process/process_2.py
+    uv run python loguru_playground/demo/process/process_2.py
 """
 
 import signal
 import sys
 from loguru import logger
-from loguru_playground.generator.main import run_forever
+from loguru_playground.demo.generator.main import run_forever
 from loguru_playground.config.env import ARCHIVE_PATH
 from loguru_playground.config.logger_config import add_file_sinks
 
